@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
     const m = { ...parse(existing), ...req.body }
     await run(
       `UPDATE projects SET name=?,client=?,status=?,priority=?,budget=?,deadline=?,
-       progress=?,tags=?,description=?,updated_at=datetime('now') WHERE id=?`,
+       progress=?,tags=?,description=?,updated_at=NOW() WHERE id=?`,
       [m.name, m.client, m.status, m.priority, m.budget, m.deadline,
        m.progress, format(m.tags), m.description, req.params.id]
     )

@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Credenciales incorrectas' })
     }
 
-    await run("UPDATE users SET last_login = datetime('now') WHERE id = ?", [user.id])
+    await run('UPDATE users SET last_login = NOW() WHERE id = ?', [user.id])
 
     const payload = { id: user.id, username: user.username, full_name: user.full_name, email: user.email, role: user.role }
     res.json({ token: sign(payload), user: payload })

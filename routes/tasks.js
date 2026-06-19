@@ -52,7 +52,7 @@ router.put('/:id', async (req, res) => {
 
     await run(
       `UPDATE tasks SET title=?,description=?,project=?,project_id=?,sprint_id=?,
-       assignee=?,status=?,priority=?,type=?,story_points=?,due=?,updated_at=datetime('now') WHERE id=?`,
+       assignee=?,status=?,priority=?,type=?,story_points=?,due=?,updated_at=NOW() WHERE id=?`,
       [m.title, m.description, m.project, m.project_id, sprintId,
        m.assignee, m.status, m.priority, m.type, m.story_points, m.due, req.params.id]
     )

@@ -42,7 +42,7 @@ router.put('/:id', async (req, res) => {
 
     const m = { ...existing, ...req.body }
     await run(
-      `UPDATE clients SET name=?,contact=?,email=?,sector=?,status=?,value=?,projects=?,updated_at=datetime('now') WHERE id=?`,
+      'UPDATE clients SET name=?,contact=?,email=?,sector=?,status=?,value=?,projects=?,updated_at=NOW() WHERE id=?',
       [m.name, m.contact, m.email, m.sector, m.status, m.value, m.projects, req.params.id]
     )
     res.json(await get('SELECT * FROM clients WHERE id = ?', [req.params.id]))
