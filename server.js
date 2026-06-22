@@ -19,6 +19,8 @@ const PORT = process.env.PORT || 3001
 const allowed = (process.env.CORS_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean)
 const isDev   = (process.env.NODE_ENV || 'development') !== 'production'
 
+app.use(helmet())
+
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin) return cb(null, true)
@@ -31,7 +33,6 @@ app.use(cors({
   credentials: true,
 }))
 
-app.use(helmet())
 app.use(express.json())
 
 const authLimiter = rateLimit({
