@@ -46,4 +46,14 @@ router.put('/:id', authenticate, async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }) }
 })
 
+router.delete('/:id', authenticate, async (req, res) => {
+  try {
+    if (!await get('SELECT id FROM leads WHERE id = ?', [req.params.id])) {
+      return res.status(404).json({ error: 'Lead no encontrado' })
+    }
+    await run('DELETE FROM leads WHERE id = ?', [req.params.id])
+    res.json({ message: 'Lead eliminado' })
+  } catch (e) { res.status(500).json({ error: e.message }) }
+})
+
 module.exports = router
