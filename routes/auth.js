@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt    = require('jsonwebtoken')
+const { randomInt } = require('crypto')
 const { get, run } = require('../database')
 const { authenticate } = require('../middleware/auth')
 const { sendTempPassword } = require('../mailer')
@@ -8,7 +9,7 @@ const router = require('express').Router()
 
 function generateTempPassword(len = 10) {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
-  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  return Array.from({ length: len }, () => chars[randomInt(chars.length)]).join('')
 }
 
 const sign = (payload) =>

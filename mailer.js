@@ -14,6 +14,16 @@ function formatCOP(n) {
   return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n)
 }
 
+function esc(value) {
+  if (value === null || value === undefined) return value
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 function baseHtml(title, content) {
   return `
   <div style="font-family:Inter,Arial,sans-serif;max-width:540px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;">
@@ -62,13 +72,13 @@ async function notifyNewProject(project, createdBy) {
     <p style="color:#374151;font-size:14px;margin:0 0 20px;">Se registró un nuevo proyecto en el dashboard:</p>
     <div style="background:#f0fafa;border:1.5px solid #0e9da3;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
       <table style="width:100%;border-collapse:collapse;">
-        ${row('Proyecto', project.name)}
-        ${row('Cliente', project.client)}
-        ${row('Estado', project.status)}
-        ${row('Prioridad', project.priority)}
+        ${row('Proyecto', esc(project.name))}
+        ${row('Cliente', esc(project.client))}
+        ${row('Estado', esc(project.status))}
+        ${row('Prioridad', esc(project.priority))}
         ${row('Presupuesto', project.budget ? formatCOP(project.budget) : null)}
-        ${row('Fecha límite', project.deadline)}
-        ${row('Creado por', createdBy || 'Sistema')}
+        ${row('Fecha límite', esc(project.deadline))}
+        ${row('Creado por', esc(createdBy) || 'Sistema')}
       </table>
     </div>
     <p style="color:#6b7280;font-size:13px;">Revisa el dashboard para ver todos los detalles y asignar tareas al equipo.</p>`
@@ -84,13 +94,13 @@ async function notifyNewClient(client, createdBy) {
     <p style="color:#374151;font-size:14px;margin:0 0 20px;">Se registró un nuevo cliente potencial:</p>
     <div style="background:#f0fafa;border:1.5px solid #0e9da3;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
       <table style="width:100%;border-collapse:collapse;">
-        ${row('Empresa', client.name)}
-        ${row('Contacto', client.contact)}
-        ${row('Email', client.email)}
-        ${row('Sector', client.sector)}
-        ${row('Estado', client.status)}
+        ${row('Empresa', esc(client.name))}
+        ${row('Contacto', esc(client.contact))}
+        ${row('Email', esc(client.email))}
+        ${row('Sector', esc(client.sector))}
+        ${row('Estado', esc(client.status))}
         ${row('Valor contrato', client.value ? formatCOP(client.value) : null)}
-        ${row('Registrado por', createdBy || 'Sistema')}
+        ${row('Registrado por', esc(createdBy) || 'Sistema')}
       </table>
     </div>
     <p style="color:#6b7280;font-size:13px;">Recuerda hacer seguimiento en las próximas 24 horas para cerrar el prospecto.</p>`
@@ -103,7 +113,7 @@ async function notifyNewClient(client, createdBy) {
 // ── Contraseña temporal (reutilizado desde auth.js) ────────────────────────
 async function sendTempPassword(toEmail, fullName, tempPass, frontendUrl) {
   const content = `
-    <p style="color:#374151;font-size:14px;margin:0 0 20px;">Hola, <strong>${fullName}</strong> 👋<br/>
+    <p style="color:#374151;font-size:14px;margin:0 0 20px;">Hola, <strong>${esc(fullName)}</strong> 👋<br/>
     Recibimos una solicitud para restablecer tu contraseña.</p>
     <div style="background:#f0fafa;border:2px solid #0e9da3;border-radius:12px;padding:20px;text-align:center;margin-bottom:24px;">
       <p style="color:#6b7280;font-size:12px;margin:0 0 8px;text-transform:uppercase;letter-spacing:1px;">Tu contraseña temporal</p>

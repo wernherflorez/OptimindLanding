@@ -1,7 +1,9 @@
 require('dotenv').config()
 
-const express = require('express')
-const cors    = require('cors')
+const express   = require('express')
+const cors      = require('cors')
+const helmet    = require('helmet')
+const rateLimit = require('express-rate-limit')
 const { init } = require('./database')
 
 const authRoutes     = require('./routes/auth')
@@ -29,7 +31,18 @@ app.use(cors({
   credentials: true,
 }))
 
+app.use(helmet())
 app.use(express.json())
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos. Intenta de nuevo en unos minutos.' },
+})
+app.use('/api/auth/login',  authLimiter)
+app.use('/api/auth/forgot', authLimiter)
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok', ts: new Date().toISOString() }))
 app.use('/api/auth',     authRoutes)
