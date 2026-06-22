@@ -120,6 +120,19 @@ async function createSchema() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    CREATE TABLE IF NOT EXISTS leads (
+      id         SERIAL PRIMARY KEY,
+      name       TEXT        NOT NULL,
+      email      TEXT        NOT NULL,
+      company    TEXT,
+      sector     TEXT,
+      budget     TEXT,
+      message    TEXT        NOT NULL,
+      status     TEXT        NOT NULL DEFAULT 'Nuevo',
+      seen       BOOLEAN     NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
   `)
 }
 

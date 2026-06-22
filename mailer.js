@@ -110,6 +110,30 @@ async function notifyNewClient(client, createdBy) {
   })
 }
 
+// ── Nuevo lead (formulario de diagnóstico gratuito) ────────────────────────
+async function notifyNewLead(lead) {
+  const content = `
+    <p style="color:#374151;font-size:14px;margin:0 0 20px;">Alguien agendó un diagnóstico gratuito desde el sitio:</p>
+    <div style="background:#f0fafa;border:1.5px solid #0e9da3;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;">
+        ${row('Nombre', esc(lead.name))}
+        ${row('Email', esc(lead.email))}
+        ${row('Empresa', esc(lead.company))}
+        ${row('Sector', esc(lead.sector))}
+        ${row('Presupuesto', esc(lead.budget))}
+      </table>
+    </div>
+    <div style="background:#f9fafb;border-radius:10px;padding:14px 16px;margin-bottom:20px;">
+      <p style="color:#6b7280;font-size:12px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px;">Mensaje</p>
+      <p style="color:#374151;font-size:14px;margin:0;">${esc(lead.message)}</p>
+    </div>
+    <p style="color:#6b7280;font-size:13px;">Responde en menos de 24 horas para no perder el prospecto.</p>`
+  await send({
+    subject: `📩 Nuevo diagnóstico agendado: ${lead.name}`,
+    html: baseHtml('Nuevo diagnóstico agendado', content),
+  })
+}
+
 // ── Contraseña temporal (reutilizado desde auth.js) ────────────────────────
 async function sendTempPassword(toEmail, fullName, tempPass, frontendUrl) {
   const content = `
@@ -134,4 +158,4 @@ async function sendTempPassword(toEmail, fullName, tempPass, frontendUrl) {
   })
 }
 
-module.exports = { notifyNewProject, notifyNewClient, sendTempPassword }
+module.exports = { notifyNewProject, notifyNewClient, notifyNewLead, sendTempPassword }

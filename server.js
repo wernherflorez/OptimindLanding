@@ -12,6 +12,7 @@ const projectsRoutes = require('./routes/projects')
 const sprintsRoutes  = require('./routes/sprints')
 const tasksRoutes    = require('./routes/tasks')
 const clientsRoutes  = require('./routes/clients')
+const leadsRoutes    = require('./routes/leads')
 
 const app  = express()
 const PORT = process.env.PORT || 3001
@@ -45,6 +46,15 @@ const authLimiter = rateLimit({
 app.use('/api/auth/login',  authLimiter)
 app.use('/api/auth/forgot', authLimiter)
 
+const leadsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes. Intenta de nuevo en unos minutos.' },
+})
+app.post('/api/leads', leadsLimiter)
+
 app.get('/api/health', (_, res) => res.json({ status: 'ok', ts: new Date().toISOString() }))
 app.use('/api/auth',     authRoutes)
 app.use('/api/users',    usersRoutes)
@@ -52,6 +62,7 @@ app.use('/api/projects', projectsRoutes)
 app.use('/api/sprints',  sprintsRoutes)
 app.use('/api/tasks',    tasksRoutes)
 app.use('/api/clients',  clientsRoutes)
+app.use('/api/leads',    leadsRoutes)
 
 app.use((err, req, res, _next) => {
   console.error(err)
