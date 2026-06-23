@@ -13,6 +13,7 @@ const sprintsRoutes  = require('./routes/sprints')
 const tasksRoutes    = require('./routes/tasks')
 const clientsRoutes  = require('./routes/clients')
 const leadsRoutes    = require('./routes/leads')
+const chatRoutes     = require('./routes/chat')
 
 const app  = express()
 const PORT = process.env.PORT || 3001
@@ -55,6 +56,15 @@ const leadsLimiter = rateLimit({
 })
 app.post('/api/leads', leadsLimiter)
 
+const chatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados mensajes. Espera unos minutos.' },
+})
+app.use('/api/chat', chatLimiter)
+
 app.get('/api/health', (_, res) => res.json({ status: 'ok', ts: new Date().toISOString() }))
 app.use('/api/auth',     authRoutes)
 app.use('/api/users',    usersRoutes)
@@ -63,6 +73,7 @@ app.use('/api/sprints',  sprintsRoutes)
 app.use('/api/tasks',    tasksRoutes)
 app.use('/api/clients',  clientsRoutes)
 app.use('/api/leads',    leadsRoutes)
+app.use('/api/chat',     chatRoutes)
 
 app.use((err, req, res, _next) => {
   console.error(err)
